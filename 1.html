@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Finder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="top-left">
+            <button class="profile-btn" onclick="viewProfile()">Profile</button>
+        </div>
+        <div class="top-middle">
+            <input type="text" class="search-bar" id="search-bar" placeholder="Search for hostels..." oninput="searchHostels()">
+        </div>
+    </header>
+
+    <!-- Buttons Section -->
+    <section class="buttons-section">
+        <button class="hostel-btn" onclick="filterHostels('girls')">Girls</button>
+        <button class="hostel-btn" onclick="filterHostels('boys')">Boys</button>
+        <button class="hostel-btn" onclick="filterHostels('all')">All</button>
+    </section>
+
+    <!-- Hostels Display Section -->
+    <section class="hostels-list" id="hostels-list">
+        <!-- Hostels will be displayed here based on the selected filter -->
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
