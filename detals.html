@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details</title>
+    <style>
+      .single-property .main-image img {
+        float: none;
+        width: 100%;
+      }
+
+      .single-property .info-table {
+        border-radius: 30px;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+        padding: 35px 30px;
+        margin-left: 60px;
+      }
+
+      .single-property .info-table ul li {
+        display: block;
+        margin-bottom: 35px;
+        padding-bottom: 35px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .single-property .info-table ul li img {
+        float: left;
+        margin-right: 25px;
+      }
+      .col-lg-4, .col-lg-8 {
+        flex: 0 0 auto;
+        width: 100%;
+      }
+      @media (min-width: 768px) {
+        .col-lg-4 {
+          width: 33.3333%;
+        }
+
+        .col-lg-8 {
+          width: 66.6666%;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  </head>
+
+  <body>
+    <header class="text-gray-600 body-font bg-white">
+      <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+        <a href=" " target="_blank" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+          <img class="w-10 h-10" src="https://wpocean.com/html/tf/mylove-live/assets/images/preloader.png" alt="">
+        </a>
+        <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center text-lg font-semibold">
+          <a class="mr-5 hover:text-[#f4b0b8] hover:border-b-4 hover:border-[#f4b0b8] cursor-pointer">Home</a>
+          <a class="mr-5 hover:text-[#f4b0b8] hover:border-b-4 hover:border-[#f4b0b8] cursor-pointer">Couple</a>
+          <a class="mr-5 hover:text-[#f4b0b8] hover:border-b-4 hover:border-[#f4b0b8] cursor-pointer">Story</a>
+          <a class="mr-5 hover:text-[#f4b0b8] hover:border-b-4 hover:border-[#f4b0b8] cursor-pointer">Gallery</a>
+        </nav>
+        <button class="inline-flex items-center bg-orange border-2 border-[#f4b0b8] hover:bg-transparent hover:text-[#f4b0b8] py-2 px-4 focus:outline-none hover:bg-gray-200 text-white font-semibold mt-4 md:mt-0">Attend Now
+        </button>
+      </div>
+    </header>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <div class="single-property section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="main-image">
+              <img src="single-property.jpg" alt="">
+            </div> 
+          </div>
+          <div class="col-lg-4">
+            <div class="info-table">
+              <ul>
+                <li>
+                  <img src="info-icon-01.png" alt="" style="max-width: 52px;">
+                  <h4>450 m2<br><span>Total Flat Space</span></h4>
+                </li>
+                <li>
+                  <img src="info-icon-02.png" alt="" style="max-width: 52px;">
+                  <h4>Contract<br><span>Contract Ready</span></h4>
+                </li>
+                <li>
+                  <img src="info-icon-03.png" alt="" style="max-width: 52px;">
+                  <h4>Payment<br><span>Payment Process</span></h4>
+                </li>
+                <li>
+                  <img src="info-icon-04.png" alt="" style="max-width: 52px;">
+                  <h4>Safety<br><span>24/7 Under Control</span></h4>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>
