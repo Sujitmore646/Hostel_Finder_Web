@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Hostel Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="top-left">
+            <button class="back-btn" onclick="goBack()">Back</button>
+        </div>
+        <div class="top-middle"><center>
+            <h1 id="hostel-name"></h1>
+        </center></div>
+    </header>
+
+    <div class="hostel-details-container">
+        <div class="hostel-details-image">
+            <img id="hostel-img" src="" alt="">
+        </div>  
+        <div class="hostel-details-info">
+            <h2>Details</h2>
+            <p><strong>Location:</strong> <span id="hostel-location"></span></p>
+            <p><strong>Type:</strong> <span id="hostel-type"></span></p>
+            <p><strong>Facilities:</strong> <span id="hostel-facilities"></span></p>
+            <p><strong>Contact:</strong> <span id="hostel-contact"></span></p>
+            <p><strong>Price Range:</strong> <span id="hostel-price"></span></p>
+            <p><strong>Available Rooms:</strong> <span id="hostel-rooms"></span></p>
+            <div class="action-buttons">
+                <button class="contact-btn" onclick="contactHostel()">Contact Hostel</button>
+                <button class="book-btn" onclick="bookHostel()">Book Now</button>
+             </div>
+        </div>
+    </div>
+    <script src="hostel-details.js"></script>
+    <script src="theme.js"></script>
+    <script src="translations.js"></script>
+    <script src="activity-log.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>User Dashboard - Hostel Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="feedback-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: var(--secondary-bg);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-text);
+        }
+        .stat-label {
+            color: var(--secondary-text);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .activity-details {
+            flex: 1;
+        }
+        .activity-time {
+            color: var(--secondary-text);
+            font-size: 12px;
+        }
+        .messages-container {
+            display: flex;
+            height: 400px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .contacts-list {
+            width: 200px;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+        .contact-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .contact-item:hover {
+            background: var(--hover-bg);
+        }
+        .contact-item.active {
+            background: var(--secondary-bg);
+        }
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 16px;
+            max-width: 70%;
+        }
+        .message.sent {
+            background: var(--button-bg);
+            color: var(--button-text);
+            margin-left: auto;
+        }
+        .message.received {
+            background: var(--secondary-bg);
+            margin-right: auto;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .notifications-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .notification-icon {
+            font-size: 20px;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-time {
+            color: var(--secondary-text);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="INDEX.html" data-i18n="home">Home</a>
+            <a href="login.html" class="auth-link" data-i18n="login">Login</a>
+            <a href="register.html" class="auth-link" data-i18n="register">Register</a>
+            <a href="admin-login.html" class="admin-link" data-i18n="adminAccess">Admin Access</a>
+        </nav>
+        <div class="top-left">
+            <button class="profile-btn" id="profile-btn" onclick="showProfileMenu()" style="display: none;">Profile</button>
+            <div class="profile-menu" id="profile-menu">
+                <!-- Profile menu items -->
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <h2 data-i18n="activityOverview">Activity Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-activities">0</div>
+                    <div class="stat-label" data-i18n="totalActivities">Total Activities</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="active-days">0</div>
+                    <div class="stat-label" data-i18n="activeDays">Active Days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="attendance-rate">0%</div>
+                    <div class="stat-label" data-i18n="attendanceRate">Attendance Rate</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="activity-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h2 data-i18n="recentActivity">Recent Activity</h2>
+            <div class="activity-list" id="activity-list">
+                <!-- Activity items will be added here -->
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h2 data-i18n="messages">Messages</h2>
+            <div class="messages-container">
+                <div class="contacts-list" id="contacts-list">
+                    <!-- Contacts will be added here -->
+                </div>
+                <div class="chat-area">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be added here -->
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="message-input" placeholder="Type a message..." data-i18n="typeMessage">
+                        <button onclick="sendMessage()" data-i18n="send">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h2 data-i18n="notifications">Notifications</h2>
+            <div class="notifications-list" id="notifications-list">
+                <!-- Notifications will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="auth-utils.js"></script>
+    <script src="theme.js"></script>
+    <script src="translations.js"></script>
+    <script src="activity-log.js"></script>
+    <script src="feedback-system.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

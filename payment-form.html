@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .booking-summary {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .payment-method:hover {
+            border-color: #4CAF50;
+        }
+        .payment-method.selected {
+            border-color: #4CAF50;
+            background-color: #f0f9f0;
+        }
+        .payment-method img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .card-details {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .price-details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        .price-total {
+            border-top: 2px solid #ddd;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-left">
+            <button class="back-btn" onclick="goBack()">Back</button>
+        </div>
+        <div class="top-middle">
+            <center><h1>Payment Details</h1></center>
+        </div>
+    </header>
+
+    <div class="payment-container">
+        <div class="booking-summary">
+            <h2>Booking Summary</h2>
+            <div id="booking-details">
+                Loading booking details...
+            </div>
+        </div>
+
+        <div class="price-details">
+            <h3>Price Details</h3>
+            <div class="price-row">
+                <span>Room Charges</span>
+                <span id="room-charges">₹0</span>
+            </div>
+            <div class="price-row">
+                <span>Taxes & Fees (18%)</span>
+                <span id="taxes">₹0</span>
+            </div>
+            <div class="price-row price-total">
+                <span>Total Amount</span>
+                <span id="total-amount">₹0</span>
+            </div>
+        </div>
+
+        <h2>Select Payment Method</h2>
+        <div class="payment-methods">
+            <div class="payment-method" onclick="selectPaymentMethod('card')">
+                <img src="https://img.icons8.com/ios/50/000000/card-in-use.png" alt="Card">
+                <div>Credit/Debit Card</div>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('upi')">
+                <img src="https://img.icons8.com/ios/50/000000/bhim-upi.png" alt="UPI">
+                <div>UPI Payment</div>
+            </div>
+        </div>
+
+        <div id="card-payment-form">
+            <h3>Card Details</h3>
+            <form id="payment-form" onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" pattern="[0-9]{16}" maxlength="16" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="card-details">
+                    <div class="form-group">
+                        <label for="card-name">Cardholder Name</label>
+                        <input type="text" id="card-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiry">Expiry</label>
+                        <input type="text" id="expiry" pattern="(0[1-9]|1[0-2])\/([0-9]{2})" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="password" id="cvv" pattern="[0-9]{3,4}" maxlength="4" required>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Pay Now</button>
+            </form>
+        </div>
+
+        <div id="upi-payment-form" style="display: none;">
+            <h3>UPI Payment</h3>
+            <form id="upi-form" onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label for="upi-id">UPI ID</label>
+                    <input type="text" id="upi-id" placeholder="username@upi" required>
+                </div>
+                <button type="submit" class="submit-btn">Pay Now</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function loadBookingDetails() {
+            // Retrieve booking details from localStorage
+            const bookingData = JSON.parse(localStorage.getItem('bookingDetails')) || {};
+            const monthlyPrice = bookingData.pricePerMonth || 0;
+            const duration = bookingData.durationMonths || 0;
+            const roomCharges = monthlyPrice * duration;
+            const taxes = roomCharges * 0.18; // 18% tax
+            const totalAmount = roomCharges + taxes;
+
+            // Update booking summary
+            document.getElementById('booking-details').innerHTML = `
+                <p><strong>Hostel:</strong> ${bookingData.hostelName || 'N/A'}</p>
+                <p><strong>Room Type:</strong> ${bookingData.roomType || 'N/A'}</p>
+                <p><strong>Check-in:</strong> ${bookingData.checkIn || 'N/A'}</p>
+                <p><strong>Duration:</strong> ${duration} Month${duration > 1 ? 's' : ''}</p>
+                <p><strong>Monthly Rate:</strong> ₹${monthlyPrice}</p>
+            `;
+
+            // Update price details
+            document.getElementById('room-charges').textContent = `₹${roomCharges}`;
+            document.getElementById('taxes').textContent = `₹${taxes.toFixed(2)}`;
+            document.getElementById('total-amount').textContent = `₹${totalAmount.toFixed(2)}`;
+        }
+
+        function selectPaymentMethod(method) {
+            // Remove selected class from all payment methods
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selected class to clicked method
+            event.currentTarget.classList.add('selected');
+
+            // Show/hide appropriate payment form
+            document.getElementById('card-payment-form').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('upi-payment-form').style.display = method === 'upi' ? 'block' : 'none';
+        }
+
+        function processPayment(event) {
+            event.preventDefault();
+            
+            const paymentMethod = document.querySelector('.payment-method.selected');
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            const isCard = paymentMethod.textContent.includes('Card');
+            let paymentDetails = {};
+
+            if (isCard) {
+                paymentDetails = {
+                    cardNumber: document.getElementById('card-number').value,
+                    cardName: document.getElementById('card-name').value,
+                    expiry: document.getElementById('expiry').value,
+                    cvv: document.getElementById('cvv').value
+                };
+            } else {
+                paymentDetails = {
+                    upiId: document.getElementById('upi-id').value
+                };
+            }
+
+            // In a real application, you would send this to a secure payment gateway
+            // For demo purposes, we'll simulate a successful payment
+            setTimeout(() => {
+                alert('Payment successful! Redirecting to confirmation page...');
+                // Clear booking details from localStorage
+                localStorage.removeItem('bookingDetails');
+                // Redirect to confirmation page or home page
+                window.location.href = 'INDEX.html';
+            }, 1500);
+        }
+
+        // Add input formatting for card details
+        document.getElementById('card-number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value;
+        });
+
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        // Initialize the page
+        window.onload = function() {
+            loadBookingDetails();
+            // Select card payment by default
+            selectPaymentMethod('card');
+        };
+    </script>
+</body>
+</html>

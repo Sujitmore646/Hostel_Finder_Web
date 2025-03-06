@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Hostel Attendance System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .attendance-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .attendance-log {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .attendance-log th, .attendance-log td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .attendance-log th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .attendance-log tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        .check-in-btn {
+            background-color: #4CAF50;
+        }
+        .check-out-btn {
+            background-color: #f44336;
+        }
+        .filter-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        .summary-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+        }
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        .summary-stats div {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .qr-scanner-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        #qr-reader {
+            margin: 0 auto;
+            max-width: 500px;
+        }
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .notification {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            padding: 15px;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+        .notification.success {
+            border-left: 4px solid #4CAF50;
+        }
+        .notification.warning {
+            border-left: 4px solid #ff9800;
+        }
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+        .notification-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0 5px;
+        }
+        .tab-container {
+            margin: 20px 0;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #f0f0f0;
+        }
+        .tab-button.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="top-left">
+            <button class="back-btn" onclick="window.history.back()">Back</button>
+        </div>
+        <div class="top-middle">
+            <h1>Hostel Attendance System</h1>
+        </div>
+    </header>
+
+    <div class="attendance-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="showTab('manual')">Manual Entry</button>
+            <button class="tab-button" onclick="showTab('qr')">QR Scanner</button>
+        </div>
+
+        <div id="manual-tab" class="tab-content active">
+            <div class="form-group">
+                <label for="student-id">Student ID/Room Number:</label>
+                <input type="text" id="student-id" required>
+                <button onclick="markAttendance('in')" class="action-btn check-in-btn">Check In</button>
+                <button onclick="markAttendance('out')" class="action-btn check-out-btn">Check Out</button>
+            </div>
+        </div>
+
+        <div id="qr-tab" class="tab-content">
+            <div class="qr-scanner-container">
+                <div id="qr-reader"></div>
+                <button onclick="qrAttendanceSystem.stopScanner()" class="action-btn">Stop Scanner</button>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h3>Daily Summary</h3>
+            <div class="summary-stats">
+                <div>Total Students: <span id="total-students">0</span></div>
+                <div>Present: <span id="present-count">0</span></div>
+                <div>Absent: <span id="absent-count">0</span></div>
+            </div>
+        </div>
+
+        <h2>Attendance Log</h2>
+        <table class="attendance-log">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Room Number</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="attendance-log">
+                <!-- Attendance records will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="notification-container" class="notification-container"></div>
+
+    <script src="notifications.js"></script>
+    <script src="qr-attendance.js"></script>
+    <script src="attendance.js"></script>
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+
+            // Initialize QR scanner if QR tab is selected
+            if (tabName === 'qr') {
+                qrAttendanceSystem.initializeScanner('qr-reader');
+            } else {
+                qrAttendanceSystem.stopScanner();
+            }
+        }
+    </script>
+</body>
+</html>

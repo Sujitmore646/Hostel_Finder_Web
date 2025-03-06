@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Book Hostel</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .booking-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-left">
+            <button class="back-btn" onclick="window.close()">Close</button>
+        </div>
+        <div class="top-middle">
+            <center><h1>Book Your Stay</h1></center>
+        </div>
+    </header>
+
+    <div class="booking-container">
+        <form id="booking-form" onsubmit="submitBooking(event)">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="check-in">Check-in Date</label>
+                <input type="date" id="check-in" name="check-in" readonly>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration</label>
+                <select id="duration" name="duration" required>
+                    <option value="">Select Duration</option>
+                    <option value="1">1 Month</option>
+                    <option value="2">2 Months</option>
+                    <option value="3">3 Months</option>
+                    <option value="4">4 Months</option>
+                    <option value="5">5 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="7">7 Months</option>
+                    <option value="8">8 Months</option>
+                    <option value="9">9 Months</option>
+                    <option value="10">10 Months</option>
+                    <option value="11">11 Months</option>
+                    <option value="12">12 Months</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="room-type">Room Type</label>
+                <select id="room-type" name="room-type" required>
+                    <option value="">Select Room Type</option>
+                </select>
+            </div>
+            <div id="price-summary" style="margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 4px; display: none;">
+                <h3>Price Summary</h3>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Monthly Rate:</span>
+                    <span id="monthly-rate">₹0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Duration:</span>
+                    <span id="duration-display">0 Months</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Room Charges:</span>
+                    <span id="room-charges">₹0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>GST (18%):</span>
+                    <span id="tax-amount">₹0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; font-weight: bold;">
+                    <span>Total Amount:</span>
+                    <span id="total-amount">₹0</span>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Proceed to Payment</button>
+        </form>
+    </div>
+
+    <script>
+        // Set check-in date as current date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('check-in').value = today;
+
+        function updatePriceSummary() {
+            const selectedHostel = JSON.parse(localStorage.getItem('selectedHostel'));
+            const duration = parseInt(document.getElementById('duration').value) || 0;
+            const roomType = document.getElementById('room-type').value;
+            
+            if (duration && selectedHostel && roomType) {
+                // Get price for selected room type
+                const basePrice = selectedHostel.rooms[roomType] || 0;
+                const roomCharges = basePrice * duration;
+                const taxAmount = roomCharges * 0.18;
+                const totalAmount = roomCharges + taxAmount;
+
+                document.getElementById('price-summary').style.display = 'block';
+                document.getElementById('monthly-rate').textContent = `₹${basePrice.toLocaleString()}`;
+                document.getElementById('duration-display').textContent = `${duration} Month${duration > 1 ? 's' : ''}`;
+                document.getElementById('room-charges').textContent = `₹${roomCharges.toLocaleString()}`;
+                document.getElementById('tax-amount').textContent = `₹${taxAmount.toLocaleString()}`;
+                document.getElementById('total-amount').textContent = `₹${totalAmount.toLocaleString()}`;
+            } else {
+                document.getElementById('price-summary').style.display = 'none';
+            }
+        }
+
+        // Add event listeners for both duration and room type changes
+        document.getElementById('duration').addEventListener('change', updatePriceSummary);
+        document.getElementById('room-type').addEventListener('change', updatePriceSummary);
+
+        // Update room types based on selected hostel
+        function updateRoomTypes() {
+            const selectedHostel = JSON.parse(localStorage.getItem('selectedHostel'));
+            if (selectedHostel) {
+                const roomTypeSelect = document.getElementById('room-type');
+                roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>';
+                
+                // Add room types with their prices
+                Object.entries(selectedHostel.rooms).forEach(([roomType, price]) => {
+                    const option = document.createElement('option');
+                    option.value = roomType;
+                    option.textContent = `${roomType} - ₹${price}/month`;
+                    roomTypeSelect.appendChild(option);
+                });
+            }
+        }
+
+        function submitBooking(event) {
+            event.preventDefault();
+            
+            // Get selected hostel data
+            const selectedHostel = JSON.parse(localStorage.getItem('selectedHostel'));
+            if (!selectedHostel) {
+                alert('No hostel selected. Please select a hostel first.');
+                return;
+            }
+
+            // Get form data
+            const formData = new FormData(event.target);
+            const bookingData = Object.fromEntries(formData.entries());
+
+            // Get price for selected room type
+            const roomType = bookingData['room-type'];
+            const duration = parseInt(bookingData.duration);
+            const basePrice = selectedHostel.rooms[roomType];
+            const roomCharges = basePrice * duration;
+            const taxAmount = roomCharges * 0.18;
+            const totalAmount = roomCharges + taxAmount;
+
+            // Calculate check-out date
+            const checkIn = new Date(bookingData['check-in']);
+            const checkOut = new Date(checkIn);
+            checkOut.setMonth(checkOut.getMonth() + duration);
+
+            // Create booking details object
+            const bookingDetails = {
+                ...bookingData,
+                hostelId: selectedHostel.id,
+                hostelName: selectedHostel.name,
+                checkIn: checkIn.toISOString().split('T')[0],
+                checkOut: checkOut.toISOString().split('T')[0],
+                durationMonths: duration,
+                pricePerMonth: basePrice,
+                roomCharges: roomCharges,
+                taxAmount: taxAmount,
+                totalAmount: totalAmount,
+                status: 'pending'
+            };
+
+            // Save booking details to localStorage
+            localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+
+            // Open payment form
+            window.location.href = 'payment-form.html';
+        }
+
+        // Load hostel details if available
+        window.onload = function() {
+            const selectedHostel = JSON.parse(localStorage.getItem('selectedHostel'));
+            if (selectedHostel) {
+                document.querySelector('.booking-container').insertAdjacentHTML('afterbegin', `
+                    <div class="selected-hostel">
+                        <h3>${selectedHostel.name}</h3>
+                        <p>Location: ${selectedHostel.location}</p>
+                        <p>Facilities: ${selectedHostel.facilities}</p>
+                    </div>
+                `);
+                updateRoomTypes();
+                updatePriceSummary();
+            }
+        };
+    </script>
+</body>
+</html>

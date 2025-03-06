@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Contact Hostel</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .contact-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        .contact-methods {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .contact-method {
+            margin: 10px 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .contact-method img {
+            width: 24px;
+            height: 24px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-left">
+            <button class="back-btn" onclick="window.close()">Close</button>
+        </div>
+        <div class="top-middle">
+            <center><h1>Contact Hostel</h1></center>
+        </div>
+    </header>
+
+    <div class="contact-container">
+        <div class="contact-methods">
+            <h2>Quick Contact</h2>
+            <div class="contact-method">
+                <img src="https://img.icons8.com/ios/50/000000/phone.png" alt="Phone">
+                <a href="#" id="phone-link">Loading...</a>
+            </div>
+            <div class="contact-method">
+                <img src="https://img.icons8.com/ios/50/000000/email.png" alt="Email">
+                <a href="#" id="email-link">Loading...</a>
+            </div>
+            <div class="contact-method">
+                <img src="https://img.icons8.com/ios/50/000000/marker.png" alt="Address">
+                <span id="address-text">Loading...</span>
+            </div>
+        </div>
+
+        <h2>Send Message</h2>
+        <form id="contact-form" onsubmit="submitContactForm(event)">
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Your Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+    </div>
+    <script src="theme.js"></script>
+    <script src="translations.js"></script>
+    
+    <script>
+        // Load hostel contact details
+        window.onload = function() {
+            const hostelData = JSON.parse(localStorage.getItem('selectedHostel'));
+            if (hostelData) {
+                const phoneLink = document.getElementById('phone-link');
+                phoneLink.href = `tel:${hostelData.contact}`;
+                phoneLink.textContent = hostelData.contact;
+
+                const emailLink = document.getElementById('email-link');
+                emailLink.href = `mailto:${hostelData.email || 'info@hostel.com'}`;
+                emailLink.textContent = hostelData.email || 'info@hostel.com';
+
+                const addressText = document.getElementById('address-text');
+                addressText.textContent = hostelData.location;
+            }
+        };
+
+        function submitContactForm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const contactData = Object.fromEntries(formData.entries());
+            
+            // Store contact message in localStorage
+            const messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            messages.push({
+                ...contactData,
+                hostelId: JSON.parse(localStorage.getItem('selectedHostel')).id,
+                timestamp: new Date().toISOString(),
+                status: 'sent'
+            });
+            localStorage.setItem('contactMessages', JSON.stringify(messages));
+            
+            alert('Message sent successfully! The hostel will contact you soon.');
+            window.close();
+        }
+    </script>
+</body>
+</html>

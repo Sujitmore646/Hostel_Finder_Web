@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .leave-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .leave-form {
+            margin-bottom: 30px;
+        }
+        .leave-history {
+            margin-top: 30px;
+        }
+        .leave-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4CAF50;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .leave-card.pending {
+            border-left-color: #ffc107;
+        }
+        .leave-card.rejected {
+            border-left-color: #dc3545;
+        }
+        .leave-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-pending {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        .status-rejected {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .date-range-picker {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .attachment-preview {
+            max-width: 200px;
+            margin-top: 10px;
+        }
+        .leave-type-select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-left">
+            <button class="back-btn" onclick="window.location.href='INDEX.html'">Back to Home</button>
+        </div>
+        <div class="top-middle">
+            <h1>Leave Management System</h1>
+        </div>
+    </header>
+
+    <div class="leave-container">
+        <div class="leave-form">
+            <h2>Apply for Leave</h2>
+            <form id="leave-application-form" onsubmit="submitLeaveApplication(event)">
+                <div class="form-group">
+                    <label for="room-number">Room Number:</label>
+                    <input type="text" id="room-number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="leave-type">Leave Type:</label>
+                    <select id="leave-type" class="leave-type-select" required>
+                        <option value="">Select Leave Type</option>
+                        <option value="medical">Medical Leave</option>
+                        <option value="personal">Personal Leave</option>
+                        <option value="vacation">Vacation</option>
+                        <option value="emergency">Emergency Leave</option>
+                    </select>
+                </div>
+
+                <div class="date-range-picker">
+                    <div class="form-group">
+                        <label for="start-date">From Date:</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-date">To Date:</label>
+                        <input type="date" id="end-date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason for Leave:</label>
+                    <textarea id="reason" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="attachment">Supporting Document (optional):</label>
+                    <input type="file" id="attachment" accept=".pdf,.jpg,.jpeg,.png">
+                    <div id="attachment-preview" class="attachment-preview"></div>
+                </div>
+
+                <button type="submit" class="action-btn">Submit Application</button>
+            </form>
+        </div>
+
+        <div class="leave-history">
+            <h2>Leave History</h2>
+            <div id="leave-history-container">
+                <!-- Leave history will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container" class="notification-container"></div>
+
+    <script src="notifications.js"></script>
+    <script src="leave-management.js"></script>
+</body>
+</html>
